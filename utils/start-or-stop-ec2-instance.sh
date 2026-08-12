@@ -6,17 +6,28 @@ echo "#Usage: $0 1   to Start or $0 0 to Stop "
 if [ "$1" -eq 1 ]; then
    echo "Start " 
     aws ec2 start-instances \
-    --instance-ids i-inst1
+    --instance-ids $instanceId1
 
     aws ec2 start-instances \
-    --instance-ids i-inst2
+    --instance-ids $instanceId2
+
+   # Wait to ensure that instances are up 
+   sleep 3m
+
+   . ./remote-exec.sh 1
 
 else
     echo "Stop"
-    aws ec2 stop-instances \
-    --instance-ids i-inst1
+
+    echo "Stop Graph Studio "
+    . ./remote-exec.sh 0
+
 
     aws ec2 stop-instances \
-    --instance-ids i-inst2
+    --instance-ids $instanceId1
+
+    aws ec2 stop-instances \
+    --instance-ids $instanceId2 
+
 fi
 
